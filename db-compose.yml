@@ -1,0 +1,18 @@
+version: "1.0"
+
+services:
+  database:
+    image: postgis/postgis:13-3.5-alpine
+    container_name: database_vh
+    ports:
+     - "5432:5432"
+    environment:
+      POSTGRES_USER: volunthub
+      POSTGRES_PASSWORD: volunthub
+      POSTGRES_DB: database_vh
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local
