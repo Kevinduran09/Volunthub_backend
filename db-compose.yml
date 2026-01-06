@@ -1,18 +1,28 @@
-version: "1.0"
-
+version: '3.4'
 services:
-  database:
-    image: postgis/postgis:13-3.5-alpine
-    container_name: database_vh
-    ports:
-     - "5432:5432"
-    environment:
-      POSTGRES_USER: volunthub
-      POSTGRES_PASSWORD: volunthub
-      POSTGRES_DB: database_vh
+  postgres:
+    image: kartoza/postgis:13-3.1
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgis-data:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=volunthub
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=postgres
+      - POSTGRES_MULTIPLE_EXTENSIONS=postgis
+      - TZ=UTC
+    ports:
+      - 5432:5432
+    restart: on-failure
+    healthcheck:
+      test: "exit 0"
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - postgis
 
 volumes:
-  pgdata:
-    driver: local
+  postgis-data:
+
+networks:
+  postgis:
