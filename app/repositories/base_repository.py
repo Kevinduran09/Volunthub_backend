@@ -26,5 +26,9 @@ class BaseRepository(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    async def delete(self, id: int) -> None:
+    async def delete(self, id: int) -> bool:
+        """
+        Delete an entity by id.
+        Returns True if the entity was deleted, False if it didn't exist.
+        """
         pass
