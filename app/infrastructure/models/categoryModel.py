@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
-from app.infrastructure.database import Base
+from app.infrastructure.core.database import Base
 
 
 class CategoryModel(Base):
