@@ -1,6 +1,9 @@
+from typing import List, TYPE_CHECKING
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.infrastructure.database import Base
+from app.infrastructure.core.database import Base
+if TYPE_CHECKING:
+    from app.infrastructure.models.eventModel import EventModel  # solo typing
 
 
 class TaskModel(Base):
@@ -13,8 +16,11 @@ class TaskModel(Base):
     priority: Mapped[str | None] = mapped_column(String)
 
     completed_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
-    event_id: Mapped[int | None] = mapped_column(ForeignKey("events.id"))
+    event_id: Mapped[int | None] = mapped_column(
+        ForeignKey("events.id"), index=True, nullable=False)
 
-    event = relationship("EventModel", back_populates="tasks")
+    event: Mapped[List["EventModel"]] = relationship(
+        "EventModel", back_populates="tasks")
+
     completed_by_user = relationship(
         "UserModel", back_populates="tasks_completed")
