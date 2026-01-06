@@ -4,11 +4,11 @@ from app.infrastructure.models.eventModel import EventModel
 
 def to_domain_event(model: EventModel) -> Event:
     ubicacion = None
-    if model.latitud is not None and model.longitud is not None:
-        ubicacion = Ubicacion(
-            latitud=model.latitud,
-            longitud=model.longitud
-        )
+    # Extraer lat/lon del Geography de PostGIS
+    # Nota: Por ahora dejamos ubicacion como None
+    # Se implementará la extracción de PostGIS Geography cuando se necesite
+    # Para extraer: usar geoalchemy2.shape.to_shape(model.location)
+    # si model.location is not None:
 
     return Event(
         id=model.id,

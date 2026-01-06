@@ -1,7 +1,12 @@
+from typing import TYPE_CHECKING, List
 from geoalchemy2 import Geography
 from sqlalchemy import Boolean, Date, Integer, String, Text, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.infrastructure.database import Base
+from app.infrastructure.core.database import Base
+
+if TYPE_CHECKING:
+    # solo para typing, no en runtime
+    from app.infrastructure.models.taskModel import TaskModel
 
 
 class EventModel(Base):
@@ -31,4 +36,9 @@ class EventModel(Base):
 
     # Relaciones
     inscriptions = relationship("InscriptionModel", back_populates="event")
-    tasks = relationship("TaskModel", back_populates="event")
+    tasks: Mapped[List["TaskModel"]] = relationship(
+        "TaskModel",
+        back_populates="event",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
