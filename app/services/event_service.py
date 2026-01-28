@@ -33,9 +33,7 @@ class EventService:
     async def get_events_by_category(self, category_id: int):
         return await self.repo.get_by_category(category_id)
 
-    async def get_nearby_events(
-        self, lat: float, lon: float, radius: int = 10000
-    ):
+    async def get_nearby_events(self, lat: float, lon: float, radius: int = 10000):
         return await self.repo.get_nearby_events(lat, lon, radius)
 
     async def get_users_inscribed_in_event(self, event_id: int):
@@ -60,18 +58,19 @@ class EventService:
 
     async def create_event(self, event_data: dict, user_id: int):
         dto = EventCreateORMArgs.model_validate(
-            event_data, context={"parse_location": parse_location})
+            event_data, context={"parse_location": parse_location}
+        )
         entity = EventModel(**dto.model_dump())
 
-        tasks_payload = event_data["tasks"]
+        tasks_payload = event_data.get("tasks") or []
 
-        for t in tasks_payload:
+        for task in tasks_payload:
             entity.tasks.append(
                 TaskModel(
-                    title=t["name"],
-                    description=t.get("description"),
-                    priority=t.get("priority"),
-                    status="pendint"
+                    title=task["name"],
+                    description=task.get("description"),
+                    priority=task.get("priority"),
+                    status="pendint",
                 )
             )
 
