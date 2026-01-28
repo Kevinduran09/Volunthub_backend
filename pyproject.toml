@@ -18,6 +18,8 @@ pydantic-settings = "^2.12.0"
 python-dotenv = "^1.2.1"
 geoalchemy2 = "^0.18.1"
 shapely = "^2.1.2"
+aiodataloader = "^0.4.2"
+aiodataloader = "^0.4.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"
@@ -28,4 +30,3 @@ mypy = "^1.8"
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-

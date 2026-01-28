@@ -1,7 +1,7 @@
 from .base_repository import BaseRepository
 from app.infrastructure.models.inscriptionModel import InscriptionModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, func
 from typing import List, Optional
 
 
@@ -57,6 +57,18 @@ class InscriptionRepository(BaseRepository[InscriptionModel]):
         result = await self.db.execute(stmt)
         return result.scalars().first()
 
+    async def count_by_event_ids(self, event_ids: list[int]) -> dict[int, int]:
+        if not event_ids:
+            return {}
+        stmt = (
+            select(InscriptionModel.id_event, func.count(InscriptionModel.id))
+            .where(InscriptionModel.id_event.in_(event_ids))
+            .group_by(InscriptionModel.id_event)
+        )
+
+        result = await self.db.execute(stmt)
+        return {row[0]: row[1] for row in result.all()}
+
     async def get_by_event_id(self, event_id: int) -> List[InscriptionModel]:
         stmt = select(InscriptionModel).where(
             InscriptionModel.id_event == event_id)
@@ -70,7 +82,8 @@ class InscriptionRepository(BaseRepository[InscriptionModel]):
         return list(result.scalars().all())
 
     async def count_by_event_id(self, event_id: int) -> int:
-        stmt = select(InscriptionModel).where(
-            InscriptionModel.id_event == event_id)
+        stmt = select(func.count(InscriptionModel.id)).where(
+            InscriptionModel.id_event == event_id
+        )
         result = await self.db.execute(stmt)
-        return len(list(result.scalars().all()))
+        return result.scalar() or 0
