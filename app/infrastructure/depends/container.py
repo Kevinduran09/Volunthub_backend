@@ -16,19 +16,29 @@ class ServiceContainer:
     @property
     def user_service(self) -> UserService:
         from app.services.user_service import UserService
+
         return self._get("usuario_service", lambda: UserService(self._db, self._logger))
 
     @property
     def event_service(self):
         from app.services.event_service import EventService
+
         return self._get("event_service", lambda: EventService(self._db))
 
     @property
     def category_service(self):
         from app.services.category_service import CategoryService
+
         return self._get("category_service", lambda: CategoryService(self._db))
 
     @property
     def inscription_service(self):
         from app.services.inscription_service import InscriptionService
+
         return self._get("inscription_service", lambda: InscriptionService(self._db))
+
+    @property
+    def task_service(self):
+        from app.services.task_service import TaskService
+
+        return self._get("task_service", lambda: TaskService(self._db))
