@@ -29,66 +29,63 @@ def format_time(value) -> str:
 
 def to_graphql_event(
     model: EventModel,
-    participantes_inscritos: Optional[int] = None,
-    distancia_m: Optional[float] = None,
-    esta_inscrito: Optional[bool] = None,
-    ubicacion: Optional[LocationType] = None,
-    participantes: Optional[list] = None,
-    tareas: Optional[list] = None,
-    categoria: Optional = None,
-    creado_por: Optional = None,
+    registered_participants_count: Optional[int] = None,
+    distance_meters: Optional[float] = None,
+    is_registered: Optional[bool] = None,
+    location: Optional[LocationType] = None,
+    participants: Optional[list[ParticipantType]] = None,
+    tasks: Optional[list] = None,
+    category_id: Optional[int] = None,
+    created_by_user_id: Optional[int] = None,
 ) -> EventType:
-    """Convierte EventModel a EventType de GraphQL"""
+    """Convert EventModel to GraphQL EventType."""
 
-    # Convertir fecha y hora a strings
-    fecha_str = format_date(model.date)
-    hora_str = format_time(model.time_begin)
+    event_date = format_date(model.date)
+    start_time = format_time(model.time_begin)
 
-    # Usar ubicacion proporcionada o crear None
-    ubicacion_type = ubicacion
-
-    # Usar participantes proporcionados o lista vacía
-    participantes_list = participantes if participantes is not None else []
-
-    # Usar tareas proporcionadas o lista vacía
-    tareas_list = tareas if tareas is not None else []
+    location_value = (
+        location if location is not None else getattr(model, "location", None)
+    )
+    participants_list = participants
+    tasks_list = tasks
 
     return EventType(
         id=str(model.id),
-        titulo=model.title or "",
-        descripcion=model.description or "",
-        fecha=fecha_str,
-        hora_inicio=hora_str,
-        zona=model.zone,
+        title=model.title or "",
+        description=model.description or "",
+        event_date=event_date,
+        start_time=start_time,
+        timezone=model.zone,
         created_at=model.created_at,
-        direccion=model.address,
-        ubicacion=ubicacion_type,
-        requiere_voluntarios=model.require_volunters or False,
-        cantidad_participantes_requeridos=model.volunters_required,
+        address=model.address,
+        requires_volunteers=model.require_volunters or False,
+        required_participants_count=model.volunters_required,
         image_url=model.image_url,
-        participantes=participantes_list,
-        participantes_inscritos=participantes_inscritos,
-        distancia_m=distancia_m,
-        tareas=tareas_list,
-        materiales_requeridos=model.materials_required,
-        habilidades_requeridas=model.skills_required,
-        requisitos_adicionales=model.extra_data,
-        estaInscrito=esta_inscrito,
-        categoria=categoria,
-        creado_por=creado_por,
+        distance_meters=distance_meters,
+        required_materials=model.materials_required,
+        required_skills=model.skills_required,
+        additional_requirements=model.extra_data,
+        _location_value=location_value,
+        _registered_participants_count=registered_participants_count,
+        _is_registered=is_registered,
+        _participants=participants_list,
+        _tasks=tasks_list,
+        _category_id=category_id
+        if category_id is not None
+        else getattr(model, "category_id", None) or getattr(model, "categoria", None),
+        _created_by_user_id=created_by_user_id
+        if created_by_user_id is not None
+        else getattr(model, "created_by_user_id", None)
+        or getattr(model, "creado_por", None)
+        or getattr(model, "created_by", None),
     )
 
 
 def to_graphql_participante(inscription: InscriptionModel) -> ParticipantType:
-    """Convierte InscriptionModel a ParticipantesType"""
-    from datetime import datetime
-
-    fecha_inscripcion = ""
-    # Si hay relación con el evento o se puede obtener de otra forma
-    # Por ahora usamos una fecha por defecto o vacía
-
+    """Convert InscriptionModel to ParticipantType."""
+    registered_at = ""
     return ParticipantType(
-        id_usuario=str(inscription.id_user),
-        id_evento=str(inscription.id_event),
-        fecha_inscripcion=fecha_inscripcion,
+        user_id=str(inscription.id_user),
+        event_id=str(inscription.id_event),
+        registered_at=registered_at,
     )

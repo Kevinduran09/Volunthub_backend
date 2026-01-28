@@ -43,6 +43,11 @@ class InscriptionService:
     async def count_inscriptions_by_event(self, event_id: int) -> int:
         return await self.repo.count_by_event_id(event_id)
 
+    async def count_inscriptions_by_event_ids(
+        self, event_ids: list[int]
+    ) -> dict[int, int]:
+        return await self.repo.count_by_event_ids(event_ids)
+
     async def check_user_inscribed(self, user_id: int, event_id: int) -> bool:
         inscription = await self.repo.get_by_user_and_event(user_id, event_id)
         return inscription is not None
