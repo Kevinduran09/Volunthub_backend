@@ -1,3 +1,6 @@
 .python-version
 .env
-poetry-lock
+poetry.lock
+.gitignore
+REPO_GAPS.md
+/.vscode

@@ -18,7 +18,6 @@ pydantic-settings = "^2.12.0"
 python-dotenv = "^1.2.1"
 geoalchemy2 = "^0.18.1"
 shapely = "^2.1.2"
-aiodataloader = "^0.4.2"
 aiodataloader = "^0.4.3"
 
 [tool.poetry.group.dev.dependencies]

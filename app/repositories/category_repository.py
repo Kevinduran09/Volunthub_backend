@@ -1,7 +1,7 @@
 from .base_repository import BaseRepository
 from app.infrastructure.models.categoryModel import CategoryModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from typing import Optional
 
 
@@ -16,6 +16,16 @@ class CategoryRepository(BaseRepository[CategoryModel]):
 
     async def get_by_id(self, id: int) -> Optional[CategoryModel]:
         return await self.db.get(CategoryModel, id)
+
+    async def get_category_by_ids(self, event_ids: list[int]):
+        if not event_ids:
+            return {}
+        stmt = (
+            select(CategoryModel.id)
+            .where(CategoryModel.id.in_(event_ids))
+        )
+        result = self.db.execute(stmt)
+        return {row[0]: row[1] for row in result.all()}
 
     async def create(self, entity: CategoryModel) -> CategoryModel:
         self.db.add(entity)

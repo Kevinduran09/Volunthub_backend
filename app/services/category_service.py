@@ -10,6 +10,9 @@ class CategoryService:
     async def get_category_by_id(self, category_id: int):
         return await self.repo.get_by_id(category_id)
 
+    async def get_category_by_ids(self, event_ids: list[int]):
+        return await self.repo.get_category_by_ids(event_ids)
+
     async def get_all_categories(self):
         return await self.repo.get_all()
 

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List
 from geoalchemy2 import Geography
-from sqlalchemy import Boolean, Date, Integer, String, Text, Time
+from sqlalchemy import Boolean, Date, ForeignKey, Integer, String, Text, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.infrastructure.core.database import Base
 
@@ -42,3 +42,6 @@ class EventModel(Base):
         cascade="all, delete-orphan",
         lazy="selectin"
     )
+    category_id: Mapped[int] = mapped_column(
+        ForeignKey("category.id"), nullable=False)
+    category = relationship("CategoryModel", back_populates="event")

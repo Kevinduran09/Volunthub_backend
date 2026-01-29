@@ -46,7 +46,6 @@ class EventType:
     required_materials: Optional[str]
     required_skills: Optional[str]
     additional_requirements: Optional[str]
-
     _location_value: strawberry.Private[object | None] = None
     _participants: strawberry.Private[Optional[list[ParticipantType]]] = None
     _registered_participants_count: strawberry.Private[Optional[int]] = None
@@ -139,13 +138,11 @@ class EventType:
 
     @strawberry.field
     async def category(self, info: Info[GraphQLContext]) -> Optional[CategoryType]:
-        if not self._category_id:
-            return None
-        service = info.context.services.category_service
-        category = await service.get_category_by_id(self._category_id)
-        if not category:
-            return None
-        from app.repositories.mappers.category_mapper import to_graphql_category
+        loaders = getattr(info.context, "loaders", None)
+        if loaders and hasattr(loaders, "event_category"):
+            return await loaders.event_participants_count.load(int(self.id))
+        service = info.context.services.event_service
+        return await service.get_event_participants_count(int(str(self.id)))
 
         return to_graphql_category(category)
 
